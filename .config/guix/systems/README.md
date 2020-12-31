@@ -4,8 +4,11 @@
 
 Since I use modern Thinkpads, I have to use the non-free kernel and firmware
 blobs from the [`nonguix`](https://gitlab.com/nonguix/nonguix) channel.  After
-cloning the repo, the installation image can be built with this command:
-
+cloning the repo, the installation image can be built with following steps:
+ - config .config/guix/channels.scm, refer to https://github.com/daviwil/dotfiles/blob/master/Systems.org#channels
+ - `guix pull`
+ - `sudo systemctl restart guix-daemon`
+ - then:
 ```shell
 guix system disk-image ./install.scm
 ```
@@ -13,6 +16,8 @@ guix system disk-image ./install.scm
 **NOTE:** It can take an hour or more for this to complete, so be patient...
 
 Once the build is complete, you can write the output image to a USB stick:
+
+You may not have enough space to hold updated packages that will be done at future steps, so expand the partitions now with parted, e2fsck -f /dev/sdc2, resize2fs /dev/sdc2
 
 ```shell
 sudo dd if=/gnu/store/nyg6jv3a4l0pbcvb0x7jfsb60k9qalga-disk-image of=/dev/sdX status=progress
@@ -36,6 +41,11 @@ network={
   psk="unencrypted passphrase"
 }
 ```
+
+```
+herd stop wpa_supplicant
+```
+
 
 Then run `wpa_supplicant -c wifi.conf -i wlp4s0 -B` to connect.
 
